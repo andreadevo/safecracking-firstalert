@@ -18,10 +18,13 @@ const int photoGatePin = 7;   // input pin from photogate
 int switchState;              // current state of the switch
 int photoState;               // current state of the photogate
 
+bool stateAChange = false;    // check if change has happened on A
+bool stateBChange = false;    // check if change has happened on B
+
 void setup() {
   // SETUP FOR ENCODER
-  pinMode(encoder0PinA, INPUT);
-  pinMode(encoder0PinB, INPUT);
+  pinMode(encoder0PinA, INPUT_PULLUP);
+  pinMode(encoder0PinB, INPUT_PULLUP);
   
   // encoder pin on interrupt 0 (pin 2)
   attachInterrupt(0, doEncoderA, CHANGE);
@@ -58,11 +61,24 @@ void loop() {
     // switch off, CCW
     digitalWrite(dirPin, LOW);
   }
+
+  // CHECK IF ENCODER HAS MOVED
+  if(stateAChange){
+    Serial.print ("A ");
+    Serial.println (encoder0Pos, DEC);
+    stateAChange = false;
+  }
+  if(stateBChange){
+    Serial.print ("B ");
+    Serial.println (encoder0Pos, DEC);
+    stateBChange = false;
+  }
 }
 
 // ENCODER CODE
 // encoder code from: playground.arduino.cc/Main/RotaryEncoders
 void doEncoderA() {
+  stateAChange = true;
   // look for a low-to-high on channel A
   if (digitalRead(encoder0PinA) == HIGH) {
 
@@ -85,11 +101,10 @@ void doEncoderA() {
       encoder0Pos = encoder0Pos - 1;          // CCW
     }
   }
-  Serial.println (encoder0Pos, DEC);
-  // use for debugging - remember to comment out
 }
 
 void doEncoderB() {
+  stateBChange = true;
   // look for a low-to-high on channel B
   if (digitalRead(encoder0PinB) == HIGH) {
 
