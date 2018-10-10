@@ -1,6 +1,6 @@
 const int encoder0PinA = 2;
 const int encoder0PinB = 3;
-volatile unsigned int encoder0Pos = 0;
+volatile int encoder0Pos = 0;
 
 const int dirPin = 5;         // outputs the direction to dir pin on motor controller
 const int pwmPin = 6;         // outputs high/low to PWM pin on motor controller, controls if motor is on/off
@@ -33,7 +33,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   digitalWrite(pwmPin, HIGH);
-  digitalWrite(dirPin, HIGH);
+  digitalWrite(dirPin, LOW);
 
   // CHECK IF ENCODER HAS MOVED
   if (stateAChange) {
@@ -54,26 +54,26 @@ void doEncoderA() {
   if (digitalRead(encoder0PinA) == HIGH) {
     // check channel B to see which way encoder is turning
     if (digitalRead(encoder0PinB) == LOW) {
-      encoder0Pos = encoder0Pos + 1;         // CW
+      encoder0Pos = encoder0Pos - 1;         // CW
     }
     else {
-      encoder0Pos = encoder0Pos - 1;         // CCW
+      encoder0Pos = encoder0Pos + 1;         // CCW
     }
   }
   // must be a high-to-low edge on channel A
   else   {
     // check channel B to see which way encoder is turning
     if (digitalRead(encoder0PinB) == HIGH) {
-      encoder0Pos = encoder0Pos + 1;          // CW
+      encoder0Pos = encoder0Pos - 1;          // CW
     }
     else {
-      encoder0Pos = encoder0Pos - 1;          // CCW
+      encoder0Pos = encoder0Pos + 1;          // CCW
     }
   }
 
   // Reset counter
-  if (encoder0Pos > 8400) {
-    encoder0Pos = 0;
+  if (encoder0Pos > 8399) {
+    encoder0Pos = 1;
   }
   else if (encoder0Pos < 0) {
     encoder0Pos = 8400;
@@ -87,10 +87,10 @@ void doEncoderB() {
 
     // check channel A to see which way encoder is turning
     if (digitalRead(encoder0PinA) == HIGH) {
-      encoder0Pos = encoder0Pos + 1;         // CW
+      encoder0Pos = encoder0Pos - 1;         // CW
     }
     else {
-      encoder0Pos = encoder0Pos - 1;         // CCW
+      encoder0Pos = encoder0Pos + 1;         // CCW
     }
   }
 
@@ -98,15 +98,15 @@ void doEncoderB() {
   else {
     // check channel B to see which way encoder is turning
     if (digitalRead(encoder0PinA) == LOW) {
-      encoder0Pos = encoder0Pos + 1;          // CW
+      encoder0Pos = encoder0Pos - 1;          // CW
     }
     else {
-      encoder0Pos = encoder0Pos - 1;          // CCW
+      encoder0Pos = encoder0Pos + 1;          // CCW
     }
   }
 
   // Reset counter
-  if (encoder0Pos > 8400) {
+  if (encoder0Pos > 8399) {
     encoder0Pos = 0;
   }
   else if (encoder0Pos < 0) {
