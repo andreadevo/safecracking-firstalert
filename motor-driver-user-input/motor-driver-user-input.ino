@@ -57,7 +57,6 @@ void loop() {
     incoming = Serial.read();
     Serial.print("You pressed: ");
     Serial.write(incoming);
-    Serial.println();
 
     // ROTATE DIAL TO USER INPUT
     if (incoming == 'd') {
@@ -97,7 +96,7 @@ int goHome() {
   photoState = digitalRead(photoGatePin);
   Serial.println("Photostate reads: ");
   Serial.print(photoState);
-  
+
   digitalWrite(pwmPin, HIGH);     //turns motor on
   while (photoState == HIGH) {
     photoState = digitalRead(photoGatePin);
@@ -113,18 +112,17 @@ void rotateDial() {
   Serial.println("Use positive number for CW nd neg numbers for CCW.");
   Serial.print("Enter dial position: ");
   while (!Serial.available());
-  int dialPos = Serial.parseInt();
+  int dialPos = Serial.parseInt();    // where we want the dial to go
 
   Serial.print("You told me to go to ");
   Serial.println(dialPos);
-  dialPos = (dialPos);
+  
   Serial.print("Current position: ");
   Serial.println(encoder0Pos);
   Serial.print("Desired position: ");
-  Serial.println(dialPos * 86);
+  Serial.println(dialPos * 86);       // converts user input to be in encoder steps
   if (dialPos > encoder0Pos) {
     // CW
-    //dialPos = (dialPos * 86);   // converts user input to be in encoder steps
     Serial.println("CW");
     digitalWrite(dirPin, HIGH);
     while (encoder0Pos != dialPos) {
@@ -134,7 +132,7 @@ void rotateDial() {
   }
   else {
     // CCW
-    //dialPos = 8600 - (dialPos * 86);   // converts user input to be in encoder steps
+    //dialPos = 8600 - (dialPos * 86);  // converts user input to be in encoder steps
     Serial.print("CCW");
     digitalWrite(dirPin, LOW);
     while (encoder0Pos != dialPos) {
@@ -147,7 +145,7 @@ void rotateDial() {
 ////////////////////////////////////////////////////////////////////////////////////
 
 //USES SWITCH TO CHANGE DIRECTION
-void manualDirectionChange(){
+void manualDirectionChange() {
   switchState = digitalRead(switchPin);
   if (switchState == HIGH) {
     // switch on, CW
@@ -202,7 +200,6 @@ void doEncoderB() {
   }
 
   // Look for a high-to-low on channel B
-
   else {
     // check channel B to see which way encoder is turning
     if (digitalRead(encoder0PinA) == LOW) {
@@ -216,11 +213,10 @@ void doEncoderB() {
 
 //////////////////////////////////////////////////////////////////////////
 
-int convertToSteps(int encoderPos){
+int convertToSteps(int encoderPos) {
   //check for home, if no home, set start to 0
   //if homed, offset step from 0
   //take encoder values
 }
 
 //////////////////////////////////////////////////////////////////////////
-
