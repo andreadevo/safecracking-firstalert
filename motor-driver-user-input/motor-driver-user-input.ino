@@ -8,7 +8,7 @@
 
 const int encoder0PinA = 2;
 const int encoder0PinB = 3;
-volatile unsigned int encoder0Pos = 0;
+volatile int encoder0Pos = 0;
 
 const int dirPin = 5;         // outputs the direction to dir pin on motor controller
 const int pwmPin = 6;         // outputs high/low to PWM pin on motor controller, controls if motor is on/off
@@ -65,7 +65,7 @@ void loop() {
     else if (incoming == 'h') {
       homePos = goHome();
       Serial.print("The home position is ");
-      Serial.println(homePos);
+      Serial.println(homePos / 84);
     }
   }
 
@@ -120,11 +120,12 @@ void rotateDial() {
   Serial.print("Current position: ");
   Serial.println(encoder0Pos);
   Serial.print("Desired position: ");
-  Serial.println(dialPos * 86);       // converts user input to be in encoder steps
+  Serial.println(dialPos);       // converts user input to be in encoder steps
+  dialPos = dialPos * 84;
   if (dialPos > encoder0Pos) {
     // CW
     Serial.println("CW");
-    digitalWrite(dirPin, HIGH);
+    digitalWrite(dirPin, HIGH);    //CW
     while (encoder0Pos != dialPos) {
       digitalWrite(pwmPin, HIGH);
     }
@@ -134,7 +135,7 @@ void rotateDial() {
     // CCW
     //dialPos = 8600 - (dialPos * 86);  // converts user input to be in encoder steps
     Serial.print("CCW");
-    digitalWrite(dirPin, LOW);
+    digitalWrite(dirPin, LOW);   //CCW
     while (encoder0Pos != dialPos) {
       digitalWrite(pwmPin, HIGH);
     }
@@ -159,29 +160,36 @@ void manualDirectionChange() {
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-// ENCODER CODE
-// encoder code from: playground.arduino.cc/Main/RotaryEncoders
+//ENCODER CODE
 void doEncoderA() {
   stateAChange = true;
   // look for a low-to-high on channel A
   if (digitalRead(encoder0PinA) == HIGH) {
     // check channel B to see which way encoder is turning
     if (digitalRead(encoder0PinB) == LOW) {
-      encoder0Pos = encoder0Pos + 1;         // CW
+      encoder0Pos = encoder0Pos - 1;         // CW
     }
     else {
-      encoder0Pos = encoder0Pos - 1;         // CCW
+      encoder0Pos = encoder0Pos + 1;         // CCW
     }
   }
   // must be a high-to-low edge on channel A
   else   {
     // check channel B to see which way encoder is turning
     if (digitalRead(encoder0PinB) == HIGH) {
-      encoder0Pos = encoder0Pos + 1;          // CW
+      encoder0Pos = encoder0Pos - 1;          // CW
     }
     else {
-      encoder0Pos = encoder0Pos - 1;          // CCW
+      encoder0Pos = encoder0Pos + 1;          // CCW
     }
+  }
+
+  // Reset counter
+  if (encoder0Pos > 8399) {
+    encoder0Pos = 1;
+  }
+  else if (encoder0Pos < 0) {
+    encoder0Pos = 8400;
   }
 }
 
@@ -192,10 +200,10 @@ void doEncoderB() {
 
     // check channel A to see which way encoder is turning
     if (digitalRead(encoder0PinA) == HIGH) {
-      encoder0Pos = encoder0Pos + 1;         // CW
+      encoder0Pos = encoder0Pos - 1;         // CW
     }
     else {
-      encoder0Pos = encoder0Pos - 1;         // CCW
+      encoder0Pos = encoder0Pos + 1;         // CCW
     }
   }
 
@@ -203,20 +211,20 @@ void doEncoderB() {
   else {
     // check channel B to see which way encoder is turning
     if (digitalRead(encoder0PinA) == LOW) {
-      encoder0Pos = encoder0Pos + 1;          // CW
+      encoder0Pos = encoder0Pos - 1;          // CW
     }
     else {
-      encoder0Pos = encoder0Pos - 1;          // CCW
+      encoder0Pos = encoder0Pos + 1;          // CCW
     }
   }
-}
 
-//////////////////////////////////////////////////////////////////////////
-
-int convertToSteps(int encoderPos) {
-  //check for home, if no home, set start to 0
-  //if homed, offset step from 0
-  //take encoder values
+  // Reset counter
+  if (encoder0Pos > 8399) {
+    encoder0Pos = 0;
+  }
+  else if (encoder0Pos < 0) {
+    encoder0Pos = 8400;
+  }
 }
 
 //////////////////////////////////////////////////////////////////////////
