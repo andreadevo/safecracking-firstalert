@@ -21,6 +21,10 @@ int photoState;               // current state of the photogate
 bool stateAChange = false;    // check if change has happened on A
 bool stateBChange = false;    // check if change has happened on B
 
+int homePos;                  // tracks home positon of motor;
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
 void setup() {
   // SETUP FOR ENCODER
   pinMode(encoder0PinA, INPUT_PULLUP);
@@ -36,12 +40,15 @@ void setup() {
   pinMode(pwmPin, OUTPUT);
   pinMode(switchPin, INPUT);
 
+  Serial.begin(9600);
+
   //LAUNCH MENU
   Serial.println("d)Dial position");
   Serial.println("h)Go home");
 
-  Serial.begin(9600);
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 void loop() {
   //USER INPUT
@@ -54,36 +61,13 @@ void loop() {
 
     // ROTATE DIAL TO USER INPUT
     if (incoming == 'd') {
-      Serial.print("Enter dial position: ");
-      while (!Serial.available());
-      int dialPosition = Serial.parseInt();
-
-      Serial.print("You told me to go to ");
-      Serial.println(dialPosition);
-      rotateDial(dialPosition);
+      rotateDial();
     }
-  }
-
-  // LOOKS AT PHOTOGATE
-  photoState = digitalRead(photoGatePin);
-  if (photoState == HIGH) {
-    // unbroken, motor on
-    digitalWrite(pwmPin, HIGH);
-  }
-  else {
-    // broken, motor off
-    digitalWrite(pwmPin, LOW);
-  }
-
-  // LOOKS AT SWITCH
-  switchState = digitalRead(switchPin);
-  if (switchState == HIGH) {
-    // switch on, CW
-    digitalWrite(dirPin, HIGH);
-  }
-  else {
-    // switch off, CCW
-    digitalWrite(dirPin, LOW);
+    else if (incoming == 'h') {
+      homePos = goHome();
+      Serial.print("The home position is ");
+      Serial.println(homePos);
+    }
   }
 
   // CHECK IF ENCODER HAS MOVED
@@ -99,13 +83,90 @@ void loop() {
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////////
+
+void launchMenu() {
+  Serial.println("d)Dial position");
+  Serial.println("h)Go home");
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
+//CREATES BASELINE FOR DIAL
+int goHome() {
+  photoState = digitalRead(photoGatePin);
+  Serial.println("Photostate reads: ");
+  Serial.print(photoState);
+  
+  digitalWrite(pwmPin, HIGH);     //turns motor on
+  while (photoState == HIGH) {
+    photoState = digitalRead(photoGatePin);
+  }
+  digitalWrite(pwmPin, LOW);      // turns motor off
+  homePos = encoder0Pos;
+  return (homePos);               // returns home position
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+void rotateDial() {
+  Serial.println("Use positive number for CW nd neg numbers for CCW.");
+  Serial.print("Enter dial position: ");
+  while (!Serial.available());
+  int dialPos = Serial.parseInt();
+
+  Serial.print("You told me to go to ");
+  Serial.println(dialPos);
+  dialPos = (dialPos);
+  Serial.print("Current position: ");
+  Serial.println(encoder0Pos);
+  Serial.print("Desired position: ");
+  Serial.println(dialPos * 86);
+  if (dialPos > encoder0Pos) {
+    // CW
+    //dialPos = (dialPos * 86);   // converts user input to be in encoder steps
+    Serial.println("CW");
+    digitalWrite(dirPin, HIGH);
+    while (encoder0Pos != dialPos) {
+      digitalWrite(pwmPin, HIGH);
+    }
+    digitalWrite(pwmPin, LOW);
+  }
+  else {
+    // CCW
+    //dialPos = 8600 - (dialPos * 86);   // converts user input to be in encoder steps
+    Serial.print("CCW");
+    digitalWrite(dirPin, LOW);
+    while (encoder0Pos != dialPos) {
+      digitalWrite(pwmPin, HIGH);
+    }
+    digitalWrite(pwmPin, LOW);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
+//USES SWITCH TO CHANGE DIRECTION
+void manualDirectionChange(){
+  switchState = digitalRead(switchPin);
+  if (switchState == HIGH) {
+    // switch on, CW
+    digitalWrite(dirPin, HIGH);
+  }
+  else {
+    // switch off, CCW
+    digitalWrite(dirPin, LOW);
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////////
+
 // ENCODER CODE
 // encoder code from: playground.arduino.cc/Main/RotaryEncoders
 void doEncoderA() {
   stateAChange = true;
   // look for a low-to-high on channel A
   if (digitalRead(encoder0PinA) == HIGH) {
-
     // check channel B to see which way encoder is turning
     if (digitalRead(encoder0PinB) == LOW) {
       encoder0Pos = encoder0Pos + 1;         // CW
@@ -152,35 +213,14 @@ void doEncoderB() {
     }
   }
 }
-//
-//int convertToSteps(){
-//
-//}
 
-void launchMenu() {
-  Serial.println("d)Dial position");
-  Serial.println("h)Go home");
+//////////////////////////////////////////////////////////////////////////
+
+int convertToSteps(int encoderPos){
+  //check for home, if no home, set start to 0
+  //if homed, offset step from 0
+  //take encoder values
 }
 
-void rotateDial(int rotate){
-  while (encoder0Pos < 8600){
-    digitalWrite(pwmPin, HIGH);   //turns motor on
-  }
-  digitalWrite(pwmPin, HIGH);
-}
-//void rotateCCW(int numSteps){
-//
-//}
-//
-//void setDialSpeed(int rotationSpeed){
-//
-//}
-//
-//void detectFlag(){
-//
-//}
-//
-//void goHome(){
-//
-//}
+//////////////////////////////////////////////////////////////////////////
 
