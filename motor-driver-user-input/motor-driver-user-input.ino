@@ -1,7 +1,7 @@
 /*
    Andrea DeVore
    Kenzy O'Neil
-   Kendle
+   Kendle McDowell
    Safecracking Class Fall 2018
    License: Open Source
 */
@@ -71,13 +71,13 @@ void loop() {
 
   // CHECK IF ENCODER HAS MOVED
   if (stateAChange) {
-    Serial.print ("A ");
-    Serial.println (encoder0Pos, DEC);
+    //Serial.print ("A ");
+    //Serial.println (encoder0Pos, DEC);
     stateAChange = false;
   }
   if (stateBChange) {
-    Serial.print ("B ");
-    Serial.println (encoder0Pos, DEC);
+    //Serial.print ("B ");
+    //Serial.println (encoder0Pos, DEC);
     stateBChange = false;
   }
 }
@@ -109,40 +109,44 @@ int goHome() {
 /////////////////////////////////////////////////////////////////////////////////
 
 void rotateDial() {
-  Serial.println("Use positive number for CW nd neg numbers for CCW.");
+  Serial.println("Please enter a dial position between 0 and 99.");
   Serial.print("Enter dial position: ");
   while (!Serial.available());
   int dialPos = Serial.parseInt();    // where we want the dial to go
 
   Serial.print("You told me to go to ");
   Serial.println(dialPos);
-  
+
   Serial.print("Current position: ");
   Serial.println(encoder0Pos);
   Serial.print("Desired position: ");
-  Serial.println(dialPos);       // converts user input to be in encoder steps
-  dialPos = dialPos * 84;
-  if (dialPos > encoder0Pos) {
-    // CW
-    Serial.println("CW");
-    digitalWrite(dirPin, HIGH);    //CW
-    while (encoder0Pos != dialPos) {
-      digitalWrite(pwmPin, HIGH);
-    }
-    digitalWrite(pwmPin, LOW);
+  Serial.println(dialPos);    // user input for dial position on safe
+  if (dialPos > 99) {
+    Serial.println("That number is not in the dial range. Please try again.");
   }
   else {
-    // CCW
-    //dialPos = 8600 - (dialPos * 86);  // converts user input to be in encoder steps
-    Serial.print("CCW");
-    digitalWrite(dirPin, LOW);   //CCW
-    while (encoder0Pos != dialPos) {
-      digitalWrite(pwmPin, HIGH);
+    dialPos = dialPos * 84;     // converts user input to be in encoder steps
+    if (dialPos > encoder0Pos) {
+      // CW
+      Serial.println("CW");
+      digitalWrite(dirPin, HIGH);    //CW
+      while (encoder0Pos != dialPos) {
+        digitalWrite(pwmPin, HIGH);
+      }
+      digitalWrite(pwmPin, LOW);
     }
-    digitalWrite(pwmPin, LOW);
+    else {
+      // CCW
+      //dialPos = 8600 - (dialPos * 86);  // converts user input to be in encoder steps
+      Serial.print("CCW");
+      digitalWrite(dirPin, LOW);   //CCW
+      while (encoder0Pos != dialPos) {
+        digitalWrite(pwmPin, HIGH);
+      }
+      digitalWrite(pwmPin, LOW);
+    }
   }
 }
-
 ////////////////////////////////////////////////////////////////////////////////////
 
 //USES SWITCH TO CHANGE DIRECTION
