@@ -1,0 +1,8 @@
+const byte LOCATION_HOME_OFFSET 0
+
+//4-digit 
+const byte COMBO_POS_01 10
+const byte COMBO_POS_02 12
+const byte COMBO_POS_03 14
+const byte COMBO_POS_04 16
+

@@ -6,6 +6,11 @@
    License: Open Source
 */
 
+//setting
+
+#include "nvm.h" //EEPROM locations for settings
+#include <EEPROM.h> //For storing settings and things to NVM
+
 const int encoder0PinA = 2;
 const int encoder0PinB = 3;
 volatile int encoder0Pos = 0;
@@ -23,7 +28,7 @@ bool stateBChange = false;    // check if change has happened on B
 
 int homePos;                  // tracks home positon of motor;
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 
 void setup() {
   // SETUP FOR ENCODER
@@ -41,31 +46,40 @@ void setup() {
   pinMode(switchPin, INPUT);
 
   Serial.begin(9600);
-
-  //LAUNCH MENU
-  Serial.println("d)Dial position");
-  Serial.println("h)Go home");
-
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
 
+//USER INPUT
 void loop() {
-  //USER INPUT
   byte incoming;
+
+  //autohome the robot before launching the menu
+  
+  //LAUNCH MENU
+  Serial.println("1)Dial position");
+  Serial.println("2)Find home");
+  Serial.println("3)Go home");
+  Serial.println("4)Test Saved Combo");
+  
   if (Serial.available()) {
     incoming = Serial.read();
     Serial.print("You pressed: ");
     Serial.write(incoming);
 
-    // ROTATE DIAL TO USER INPUT
-    if (incoming == 'd') {
+    //menu logic
+    if (incoming == '1') {
       rotateDial();
     }
-    else if (incoming == 'h') {
+    else if (incoming == '2') {
       homePos = goHome();
       Serial.print("The home position is ");
       Serial.println(homePos / 84);
+    }
+    else if (incoming == '3'){
+      Serial.print("Returning Dial to Home Position: ");
+      Serial.println(homePos / 84);
+      //returnHome();
     }
   }
 
@@ -79,86 +93,6 @@ void loop() {
     //Serial.print ("B ");
     //Serial.println (encoder0Pos, DEC);
     stateBChange = false;
-  }
-}
-
-////////////////////////////////////////////////////////////////////////////////////
-
-void launchMenu() {
-  Serial.println("d)Dial position");
-  Serial.println("h)Go home");
-}
-
-////////////////////////////////////////////////////////////////////////////////////
-
-//CREATES BASELINE FOR DIAL
-int goHome() {
-  photoState = digitalRead(photoGatePin);
-  Serial.println("Photostate reads: ");
-  Serial.print(photoState);
-
-  digitalWrite(pwmPin, HIGH);     //turns motor on
-  while (photoState == HIGH) {
-    photoState = digitalRead(photoGatePin);
-  }
-  digitalWrite(pwmPin, LOW);      // turns motor off
-  homePos = encoder0Pos;
-  return (homePos);               // returns home position
-}
-
-/////////////////////////////////////////////////////////////////////////////////
-
-void rotateDial() {
-  Serial.println("Please enter a dial position between 0 and 99.");
-  Serial.print("Enter dial position: ");
-  while (!Serial.available());
-  int dialPos = Serial.parseInt();    // where we want the dial to go
-
-  Serial.print("You told me to go to ");
-  Serial.println(dialPos);
-
-  Serial.print("Current position: ");
-  Serial.println(encoder0Pos);
-  Serial.print("Desired position: ");
-  Serial.println(dialPos);    // user input for dial position on safe
-  if (dialPos > 99) {
-    Serial.println("That number is not in the dial range. Please try again.");
-  }
-  else {
-    dialPos = dialPos * 84;     // converts user input to be in encoder steps
-    if (dialPos > encoder0Pos) {
-      // CW
-      Serial.println("CW");
-      digitalWrite(dirPin, HIGH);    //CW
-      while (encoder0Pos != dialPos) {
-        digitalWrite(pwmPin, HIGH);
-      }
-      digitalWrite(pwmPin, LOW);
-    }
-    else {
-      // CCW
-      //dialPos = 8600 - (dialPos * 86);  // converts user input to be in encoder steps
-      Serial.print("CCW");
-      digitalWrite(dirPin, LOW);   //CCW
-      while (encoder0Pos != dialPos) {
-        digitalWrite(pwmPin, HIGH);
-      }
-      digitalWrite(pwmPin, LOW);
-    }
-  }
-}
-////////////////////////////////////////////////////////////////////////////////////
-
-//USES SWITCH TO CHANGE DIRECTION
-void manualDirectionChange() {
-  switchState = digitalRead(switchPin);
-  if (switchState == HIGH) {
-    // switch on, CW
-    digitalWrite(dirPin, HIGH);
-  }
-  else {
-    // switch off, CCW
-    digitalWrite(dirPin, LOW);
   }
 }
 
