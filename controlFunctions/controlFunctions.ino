@@ -26,7 +26,9 @@ int photoState;               // current state of the photogate
 bool stateAChange = false;    // check if change has happened on A
 bool stateBChange = false;    // check if change has happened on B
 
-int homePos;                  // tracks home positon of motor;
+int flagPos;                  // tracks home positon of motor;
+int cwOffset;                 // clockwise offset from 0
+int ccwOffset;                // counterclockwise offset from 0
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -52,37 +54,45 @@ void setup() {
 
 //USER INPUT
 void loop() {
-  byte incoming;
+  int incoming;
 
   //autohome the robot before launching the menu
-  
+
   //LAUNCH MENU
   Serial.println("1)Dial position");
   Serial.println("2)Find home");
   Serial.println("3)Go home");
   Serial.println("4)Test Saved Combo");
+  Serial.println("5)Access EEPROM");
+
+  while (!Serial.available());            // do nothing, wait for user input
   
-  if (Serial.available()) {
-    incoming = Serial.read();
-    Serial.print("You pressed: ");
-    Serial.write(incoming);
+  incoming = Serial.parseInt();
+  Serial.print("You pressed: ");
+  //Serial.write(incoming);
 
-    //menu logic
-    if (incoming == '1') {
-      rotateDial();
-    }
-    else if (incoming == '2') {
-      homePos = goHome();
-      Serial.print("The home position is ");
-      Serial.println(homePos / 84);
-    }
-    else if (incoming == '3'){
-      Serial.print("Returning Dial to Home Position: ");
-      Serial.println(homePos / 84);
-      //returnHome();
-    }
+  //menu logic
+  if (incoming == '1') {
+    rotateDial();
   }
+  else if (incoming == '2') {
+    goHome();
+    Serial.print("The flag position is ");
+    Serial.println(flagPos / 84);
+  }
+  else if (incoming == '3') {
+    Serial.print("Returning Dial to Home Position: ");
+    Serial.println(flagPos / 84);
+    //returnHome();
+  }
+  else if (incoming == '4') {
 
+  }
+  else if (incoming == '5') {
+    Serial.println("1)Change speed");
+    Serial.println("2)Change combination");
+  }
+  
   // CHECK IF ENCODER HAS MOVED
   if (stateAChange) {
     //Serial.print ("A ");

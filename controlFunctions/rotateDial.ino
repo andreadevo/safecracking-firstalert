@@ -4,6 +4,7 @@ void rotateDial() {
   Serial.println("Please enter a dial position between 0 and 99.");
   Serial.print("Enter dial position: ");
   while (!Serial.available());
+  //Serial.setTimeout(1000);
   int dialPos = Serial.parseInt();    // where we want the dial to go
 
   Serial.print("You told me to go to ");
