@@ -1,30 +1,36 @@
 //CREATES BASELINE FOR DIAL
-int goHome() {
+void goHome() {
+  // stop motor at photogate
   photoState = digitalRead(photoGatePin);
-  Serial.println("Photostate reads: ");
-  Serial.print(photoState);
-
   digitalWrite(pwmPin, HIGH);     //turns motor on
   while (photoState == HIGH) {
     photoState = digitalRead(photoGatePin);
   }
+
+  // save dial position in encoder steps
   digitalWrite(pwmPin, LOW);      // turns motor off
   flagPos = encoder0Pos;          // save the encoder position of the flag
+  EEPROM.put(FLAG_LOCATION, flagPos);
+
+  // user inputs location
   Serial.println("Where am I? ");
-  while(!Serial.available());
+  while (!Serial.available());
   Serial.setTimeout(500);
   int incoming = Serial.parseInt();
   Serial.print("The dial position is ");
   Serial.println(incoming);
-  ccwOffset = 8400 - encoder0Pos;
-  cwOffset = encoder0Pos;
-  EEPROM.put(LOCATION_HOME_CW_OFFSET, incoming*84);
-  return (flagPos);               // returns home position
-}
 
-void returnHome(){
-  //move dial to homePos or move dial until it breaks the photogate
-  //find home position variable
-  //move motor to encoder position based on closeness
+  // map
+  encoder0Pos = incoming * 84;      // set encoder position to current location
+  Serial.print("I am at: ");
+  Serial.println(encoder0Pos);
+  // go ccw to zero
+  digitalWrite(dirPin, LOW);   //CCW
+  digitalWrite(pwmPin, HIGH);
+  while (encoder0Pos > 20) {
+    //Serial.println(encoder0Pos);
+  }
+  digitalWrite(pwmPin, LOW);
+  Serial.println(encoder0Pos);
 }
 

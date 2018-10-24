@@ -29,7 +29,7 @@ bool stateBChange = false;    // check if change has happened on B
 int flagPos;                  // tracks home positon of motor;
 int cwOffset;                 // clockwise offset from 0
 int ccwOffset;                // counterclockwise offset from 0
-
+int posZero;                  // zero on dial
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void setup() {
@@ -69,16 +69,14 @@ void loop() {
   
   incoming = Serial.parseInt();
   Serial.print("You pressed: ");
-  //Serial.write(incoming);
+  Serial.println(incoming);
 
   //menu logic
   if (incoming == '1') {
     rotateDial();
   }
-  else if (incoming == '2') {
+  else if (incoming == 2) {
     goHome();
-    Serial.print("The flag position is ");
-    Serial.println(flagPos / 84);
   }
   else if (incoming == '3') {
     Serial.print("Returning Dial to Home Position: ");
