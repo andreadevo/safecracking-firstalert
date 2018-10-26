@@ -30,6 +30,7 @@ int flagPos;                  // tracks home positon of motor;
 int cwOffset;                 // clockwise offset from 0
 int ccwOffset;                // counterclockwise offset from 0
 int posZero;                  // zero on dial
+    
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void setup() {
@@ -50,7 +51,7 @@ void setup() {
   Serial.begin(9600);
 }
 
-///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////
 
 //USER INPUT
 void loop() {
@@ -60,8 +61,8 @@ void loop() {
 
   //LAUNCH MENU
   Serial.println("1)Dial position");
-  Serial.println("2)Find home");
-  Serial.println("3)Go home");
+  Serial.println("2)Go home");
+  Serial.println("3)Find home");
   Serial.println("4)Test Saved Combo");
   Serial.println("5)Access EEPROM");
 
@@ -72,105 +73,33 @@ void loop() {
   Serial.println(incoming);
 
   //menu logic
-  if (incoming == '1') {
+  if (incoming == 1) {
+    // user inputs where to go
     rotateDial();
   }
+  
   else if (incoming == 2) {
+    // homes to flag, gets EEPROM
     goHome();
+    EEPROM.get(FLAG_LOCATION, encoder0Pos);
+    Serial.println(encoder0Pos);
   }
-  else if (incoming == '3') {
-    Serial.print("Returning Dial to Home Position: ");
-    Serial.println(flagPos / 84);
-    //returnHome();
+  
+  else if (incoming == 3) {
+    // user inputs flag position, puts EEPROM
+    findHome();
   }
-  else if (incoming == '4') {
-
+  
+  else if (incoming == 4) {
+    // uses code to open safe
+    openSafe();
   }
-  else if (incoming == '5') {
+  
+  else if (incoming == 5) {
+    // change EEPROM values
     Serial.println("1)Change speed");
     Serial.println("2)Change combination");
   }
-  
-  // CHECK IF ENCODER HAS MOVED
-  if (stateAChange) {
-    //Serial.print ("A ");
-    //Serial.println (encoder0Pos, DEC);
-    stateAChange = false;
-  }
-  if (stateBChange) {
-    //Serial.print ("B ");
-    //Serial.println (encoder0Pos, DEC);
-    stateBChange = false;
-  }
+
+  encoderState();     // check if encoder state has changed 
 }
-
-////////////////////////////////////////////////////////////////////////////////////
-
-//ENCODER CODE
-void doEncoderA() {
-  stateAChange = true;
-  // look for a low-to-high on channel A
-  if (digitalRead(encoder0PinA) == HIGH) {
-    // check channel B to see which way encoder is turning
-    if (digitalRead(encoder0PinB) == LOW) {
-      encoder0Pos = encoder0Pos - 1;         // CW
-    }
-    else {
-      encoder0Pos = encoder0Pos + 1;         // CCW
-    }
-  }
-  // must be a high-to-low edge on channel A
-  else   {
-    // check channel B to see which way encoder is turning
-    if (digitalRead(encoder0PinB) == HIGH) {
-      encoder0Pos = encoder0Pos - 1;          // CW
-    }
-    else {
-      encoder0Pos = encoder0Pos + 1;          // CCW
-    }
-  }
-
-  // Reset counter
-  if (encoder0Pos > 8399) {
-    encoder0Pos = 1;
-  }
-  else if (encoder0Pos < 0) {
-    encoder0Pos = 8400;
-  }
-}
-
-void doEncoderB() {
-  stateBChange = true;
-  // look for a low-to-high on channel B
-  if (digitalRead(encoder0PinB) == HIGH) {
-
-    // check channel A to see which way encoder is turning
-    if (digitalRead(encoder0PinA) == HIGH) {
-      encoder0Pos = encoder0Pos - 1;         // CW
-    }
-    else {
-      encoder0Pos = encoder0Pos + 1;         // CCW
-    }
-  }
-
-  // Look for a high-to-low on channel B
-  else {
-    // check channel B to see which way encoder is turning
-    if (digitalRead(encoder0PinA) == LOW) {
-      encoder0Pos = encoder0Pos - 1;          // CW
-    }
-    else {
-      encoder0Pos = encoder0Pos + 1;          // CCW
-    }
-  }
-
-  // Reset counter
-  if (encoder0Pos > 8399) {
-    encoder0Pos = 0;
-  }
-  else if (encoder0Pos < 0) {
-    encoder0Pos = 8400;
-  }
-}
-
-//////////////////////////////////////////////////////////////////////////
