@@ -6,6 +6,19 @@
    License: Open Source
 */
 
+
+//IGNORE THIS UNTIL PCB COMES IN//
+//dirPin = D10
+//pwmPin = D6
+//motorReset = D8
+//photoPin = D5
+//redButton = D7
+//whiteButton = A1
+//servoPin = D9
+//buzzerPin = D11
+//////////////////////////////////
+
+
 //setting
 
 #include "nvm.h" //EEPROM locations for settings
