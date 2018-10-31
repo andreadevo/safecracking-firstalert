@@ -38,10 +38,10 @@ void doEncoderA() {
 
   // Reset counter
   if (encoder0Pos > 8399) {
-    encoder0Pos = 1;
+    encoder0Pos = 0;
   }
   else if (encoder0Pos < 0) {
-    encoder0Pos = 8400;
+    encoder0Pos = 8399;
   }
 }
 
@@ -75,6 +75,6 @@ void doEncoderB() {
     encoder0Pos = 0;
   }
   else if (encoder0Pos < 0) {
-    encoder0Pos = 8400;
+    encoder0Pos = 8399;
   }
 }

@@ -43,7 +43,7 @@ int flagPos;                  // tracks home positon of motor;
 int cwOffset;                 // clockwise offset from 0
 int ccwOffset;                // counterclockwise offset from 0
 int posZero;                  // zero on dial
-    
+
 ///////////////////////////////////////////////////////////////////////////////////////
 
 void setup() {
@@ -80,7 +80,7 @@ void loop() {
   Serial.println("5)Access EEPROM");
 
   while (!Serial.available());            // do nothing, wait for user input
-  
+
   incoming = Serial.parseInt();
   Serial.print("You pressed: ");
   Serial.println(incoming);
@@ -90,29 +90,29 @@ void loop() {
     // user inputs where to go
     rotateDial();
   }
-  
+
   else if (incoming == 2) {
     // homes to flag, gets EEPROM
     goHome();
     EEPROM.get(FLAG_LOCATION, encoder0Pos);
     Serial.println(encoder0Pos);
   }
-  
+
   else if (incoming == 3) {
     // user inputs flag position, puts EEPROM
     findHome();
   }
-  
+
   else if (incoming == 4) {
     // uses code to open safe
     openSafe();
   }
-  
+
   else if (incoming == 5) {
     // change EEPROM values
     Serial.println("1)Change speed");
     Serial.println("2)Change combination");
   }
 
-  encoderState();     // check if encoder state has changed 
+  encoderState();     // check if encoder state has changed
 }

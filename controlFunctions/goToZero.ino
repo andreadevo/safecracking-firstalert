@@ -1,6 +1,6 @@
 void goToZero(){
-  Serial.print("Current Position: ");
-  Serial.println(encoder0Pos);
+  //Serial.print("Current Position: ");
+  //Serial.println(encoder0Pos);
   if(encoder0Pos > 4200){
     digitalWrite(dirPin, HIGH);   //CW
     digitalWrite(pwmPin, HIGH);  //start the motor
@@ -12,5 +12,5 @@ void goToZero(){
     while (encoder0Pos != 0);
   }
   digitalWrite(pwmPin, LOW);     //stop the motor
-  Serial.println(encoder0Pos);
+  //Serial.println(encoder0Pos);
 }
