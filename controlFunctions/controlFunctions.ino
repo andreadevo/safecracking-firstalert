@@ -28,10 +28,11 @@ const int encoder0PinA = 2;
 const int encoder0PinB = 3;
 volatile int encoder0Pos = 0;
 
-const int dirPin = 5;         // outputs the direction to dir pin on motor controller
+const int dirPin = 10;         // outputs the direction to dir pin on motor controller
 const int pwmPin = 6;         // outputs high/low to PWM pin on motor controller, controls if motor is on/off
 const int switchPin = 4;      // input from the switch, on/pff
-const int photoGatePin = 7;   // input pin from photogate
+const int photoGatePin = 5;   // input pin from photogate
+const int buzzerPin = 11;
 
 int switchState;              // current state of the switch
 int photoState;               // current state of the photogate
@@ -43,6 +44,8 @@ int flagPos;                  // tracks home positon of motor;
 int cwOffset;                 // clockwise offset from 0
 int ccwOffset;                // counterclockwise offset from 0
 int posZero;                  // zero on dial
+int goToHome;
+int motorSpeed = 50;
 
 ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -60,6 +63,7 @@ void setup() {
   pinMode(dirPin, OUTPUT);
   pinMode(pwmPin, OUTPUT);
   pinMode(switchPin, INPUT);
+  pinMode(buzzerPin, OUTPUT);
 
   Serial.begin(9600);
 }
@@ -93,9 +97,9 @@ void loop() {
 
   else if (incoming == 2) {
     // homes to flag, gets EEPROM
-    goHome();
-    EEPROM.get(FLAG_LOCATION, encoder0Pos);
-    Serial.println(encoder0Pos);
+    findFlag();
+    EEPROM.get(FLAG_LOCATION, goToHome);
+    Serial.println(goToHome);
   }
 
   else if (incoming == 3) {

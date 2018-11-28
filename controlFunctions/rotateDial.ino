@@ -3,7 +3,6 @@ void rotateDial() {
   Serial.println("Please enter a dial position between 0 and 99.");
   Serial.print("Enter dial position: ");
   while (!Serial.available());
-  //Serial.setTimeout(1000);
   int dialPos = Serial.parseInt();    // where we want the dial to go
 
   Serial.print("You told me to go to ");
@@ -19,20 +18,18 @@ void rotateDial() {
   else {
     dialPos = dialPos * 84;           // converts user input to be in encoder steps
     if (dialPos > encoder0Pos) {
-      // CW
-      Serial.println("CW");
-      digitalWrite(dirPin, HIGH);     // CW
-      digitalWrite(pwmPin, HIGH);
+      //Serial.println("CCW");
+      digitalWrite(dirPin, LOW);     // CCW
+      analogWrite(pwmPin, motorSpeed);
       while (encoder0Pos != dialPos);
-      digitalWrite(pwmPin, LOW);
+      analogWrite(pwmPin, 0);
     }
     else {
-      // CCW
-      Serial.println("CCW");
-      digitalWrite(dirPin, LOW);   //CCW
-      digitalWrite(pwmPin, HIGH);
+      //Serial.println("CW");
+      digitalWrite(dirPin, HIGH);     // CW
+      analogWrite(pwmPin, motorSpeed);
       while (encoder0Pos != dialPos);
-      digitalWrite(pwmPin, LOW);
+      analogWrite(pwmPin, 0);
     }
   }
 }
