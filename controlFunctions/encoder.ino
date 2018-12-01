@@ -1,4 +1,6 @@
 // CHECK IF ENCODER HAS MOVED
+//playground.arduino.cc/Main/Rotary/Encoders
+
 void encoderState() {
   if (stateAChange) {
     //Serial.print ("A ");
@@ -14,25 +16,26 @@ void encoderState() {
 
 //ENCODER CODE
 void doEncoderA() {
-  stateAChange = true;
   // look for a low-to-high on channel A
   if (digitalRead(encoder0PinA) == HIGH) {
+
     // check channel B to see which way encoder is turning
     if (digitalRead(encoder0PinB) == LOW) {
-      encoder0Pos = encoder0Pos - 1;         // CW
+      encoder0Pos = encoder0Pos + 1;         // CW
     }
     else {
-      encoder0Pos = encoder0Pos + 1;         // CCW
+      encoder0Pos = encoder0Pos - 1;         // CCW
     }
   }
-  // must be a high-to-low edge on channel A
-  else   {
+
+  else   // must be a high-to-low edge on channel A
+  {
     // check channel B to see which way encoder is turning
     if (digitalRead(encoder0PinB) == HIGH) {
-      encoder0Pos = encoder0Pos - 1;          // CW
+      encoder0Pos = encoder0Pos + 1;          // CW
     }
     else {
-      encoder0Pos = encoder0Pos + 1;          // CCW
+      encoder0Pos = encoder0Pos - 1;          // CCW
     }
   }
 
@@ -43,30 +46,33 @@ void doEncoderA() {
   else if (encoder0Pos < 0) {
     encoder0Pos = 8399;
   }
+  
+  //Serial.print("A: ");
+  //Serial.println(encoder0Pos);
 }
 
 void doEncoderB() {
-  stateBChange = true;
   // look for a low-to-high on channel B
   if (digitalRead(encoder0PinB) == HIGH) {
 
     // check channel A to see which way encoder is turning
     if (digitalRead(encoder0PinA) == HIGH) {
-      encoder0Pos = encoder0Pos - 1;         // CW
+      encoder0Pos = encoder0Pos + 1;         // CW
     }
     else {
-      encoder0Pos = encoder0Pos + 1;         // CCW
+      encoder0Pos = encoder0Pos - 1;         // CCW
     }
   }
 
   // Look for a high-to-low on channel B
+
   else {
     // check channel B to see which way encoder is turning
     if (digitalRead(encoder0PinA) == LOW) {
-      encoder0Pos = encoder0Pos - 1;          // CW
+      encoder0Pos = encoder0Pos + 1;          // CW
     }
     else {
-      encoder0Pos = encoder0Pos + 1;          // CCW
+      encoder0Pos = encoder0Pos - 1;          // CCW
     }
   }
 
@@ -77,4 +83,6 @@ void doEncoderB() {
   else if (encoder0Pos < 0) {
     encoder0Pos = 8399;
   }
+  //Serial.print("B: ");
+  //Serial.println(encoder0Pos);
 }

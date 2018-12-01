@@ -82,6 +82,8 @@ void loop() {
   Serial.println("3)Find home");
   Serial.println("4)Test Saved Combo");
   Serial.println("5)Access EEPROM");
+  Serial.println("6)CCW");
+  Serial.println("7)CW");
 
   while (!Serial.available());            // do nothing, wait for user input
 
@@ -116,6 +118,28 @@ void loop() {
     // change EEPROM values
     Serial.println("1)Change speed");
     Serial.println("2)Change combination");
+  }
+  else if (incoming == 6) {
+    digitalWrite(dirPin, LOW);      // CCW
+    analogWrite(pwmPin, motorSpeed);
+
+    photoState = digitalRead(photoGatePin);
+    analogWrite(pwmPin, motorSpeed);     // turns motor on
+    while (photoState == HIGH) {
+      photoState = digitalRead(photoGatePin);
+    }
+    digitalWrite(pwmPin, LOW);      // turns motor off
+  }
+  else if (incoming == 7) {
+    digitalWrite(dirPin, HIGH);     // CW
+     analogWrite(pwmPin, motorSpeed);
+
+    photoState = digitalRead(photoGatePin);
+    analogWrite(pwmPin, motorSpeed);     // turns motor on
+    while (photoState == HIGH) {
+      photoState = digitalRead(photoGatePin);
+    }
+    digitalWrite(pwmPin, LOW);      // turns motor off
   }
 
   encoderState();     // check if encoder state has changed
