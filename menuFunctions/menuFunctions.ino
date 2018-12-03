@@ -41,7 +41,7 @@ int cwOffset;                 // clockwise offset from 0
 int ccwOffset;                // counterclockwise offset from 0
 int posZero;                  // zero on dial
 int goToHome;                 // saving home
-int motorSpeed = 250;          // speed from 0-255, written to pwmPin
+int motorSpeed = 50;          // speed from 0-255, written to pwmPin
 
 
 
@@ -108,7 +108,7 @@ void loop() {
 
     else if (incoming == 5) {
     // calls function to guess every combination until it finds the correct one
-    crackTheSafe();
+//    crackTheSafe();
   }
 
   else if (incoming == 6) {
@@ -147,11 +147,10 @@ void loop() {
   
   else if (incoming == 8) {
     digitalWrite(dirPin, HIGH);     // CW
-     analogWrite(pwmPin, motorSpeed);
-
     photoState = digitalRead(photoGatePin);
     analogWrite(pwmPin, motorSpeed);     // turns motor on
     while (photoState == HIGH) {
+      Serial.println (encoder0Pos, DEC);
       photoState = digitalRead(photoGatePin);
     }
     digitalWrite(pwmPin, LOW);      // turns motor off

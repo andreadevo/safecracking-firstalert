@@ -6,13 +6,13 @@
 
 void encoderState() {
   if (stateAChange) {
-    //Serial.print ("A ");
-    //Serial.println (encoder0Pos, DEC);
+    Serial.print ("A ");
+    Serial.println (encoder0Pos, DEC);
     stateAChange = false;
   }
   if (stateBChange) {
-    //Serial.print ("B ");
-    //Serial.println (encoder0Pos, DEC);
+    Serial.print ("B ");
+    Serial.println (encoder0Pos, DEC);
     stateBChange = false;
   }
 }
@@ -23,6 +23,7 @@ void encoderState() {
 
 void doEncoderA() {
   // look for a low-to-high on channel A
+  stateAChange = true;
   if (digitalRead(encoder0PinA) == HIGH) {
     // check channel B to see which way encoder is turning
     if (digitalRead(encoder0PinB) == LOW) {
@@ -49,8 +50,6 @@ void doEncoderA() {
   else if (encoder0Pos < 0) {
     encoder0Pos = 8399;
   }
-  //Serial.print("A: ");
-  //Serial.println(encoder0Pos);
 }
 
 ////////////////////
@@ -59,6 +58,7 @@ void doEncoderA() {
 
 void doEncoderB() {
   // look for a low-to-high on channel B
+  stateBChange = true;
   if (digitalRead(encoder0PinB) == HIGH) {
     // check channel A to see which way encoder is turning
     if (digitalRead(encoder0PinA) == HIGH) {
@@ -85,6 +85,4 @@ void doEncoderB() {
   else if (encoder0Pos < 0) {
     encoder0Pos = 8399;
   }
-  //Serial.print("B: ");
-  //Serial.println(encoder0Pos);
 }

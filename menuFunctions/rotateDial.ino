@@ -18,7 +18,7 @@ void rotateDial() {
   if (dialPos > 99) {
     Serial.println("That number is not in the dial range. Please try again.");
   }
-  
+
   // takes into account shortest distance before choosing CW or CCW
   else {
     int destination = dialPos * 84;           // converts user input to be in encoder steps
@@ -29,13 +29,18 @@ void rotateDial() {
       if (dialPos - currentPosition >= 50) {  // this would be the longer distance
         digitalWrite(dirPin, HIGH);     // CW
         analogWrite(pwmPin, motorSpeed);
-        while (encoder0Pos != destination);
+        while (encoder0Pos != destination) {
+//          Serial.println(encoder0Pos);
+        }
         analogWrite(pwmPin, 0);
       }
       else {
         digitalWrite(dirPin, LOW);      // CCW
         analogWrite(pwmPin, motorSpeed);
-        while (encoder0Pos != destination);
+        while (encoder0Pos != destination) {
+//          Serial.print ("A ");
+//          Serial.println (encoder0Pos, DEC);
+        }
         analogWrite(pwmPin, 0);
       }
     }
@@ -43,17 +48,23 @@ void rotateDial() {
       if (currentPosition - dialPos >= 50) {
         digitalWrite(dirPin, LOW);     // CCW
         analogWrite(pwmPin, motorSpeed);
-        while (encoder0Pos != destination);
+        while (encoder0Pos != destination) {
+//          Serial.print ("A ");
+//          Serial.println (encoder0Pos, DEC);
+        }
         analogWrite(pwmPin, 0);
       }
       else {
         digitalWrite(dirPin, HIGH);      // CW
         analogWrite(pwmPin, motorSpeed);
-        while (encoder0Pos != destination);
+        while (encoder0Pos != destination) {
+//          Serial.print ("A ");
+//          Serial.println (encoder0Pos, DEC);
+        }
         analogWrite(pwmPin, 0);
       }
     }
-  } 
+  }
 }
 
 //////////////////////////////////////////////////////////////////
