@@ -1,3 +1,7 @@
+////////////
+// EEPROM //
+////////////
+
 const byte LOCATION_HOME_CW_OFFSET = 0;
 const byte LOCATION_HOME_CCW_OFFSET = 2;
 const byte FLAG_LOCATION = 4;

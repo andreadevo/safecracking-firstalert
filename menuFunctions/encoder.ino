@@ -1,5 +1,8 @@
-// CHECK IF ENCODER HAS MOVED
 //playground.arduino.cc/Main/Rotary/Encoders
+
+////////////////////////////////
+// CHECK IF ENCODER HAS MOVED //
+////////////////////////////////
 
 void encoderState() {
   if (stateAChange) {
@@ -14,11 +17,13 @@ void encoderState() {
   }
 }
 
-//ENCODER CODE
+////////////////////
+// ENCODER A CODE //
+////////////////////
+
 void doEncoderA() {
   // look for a low-to-high on channel A
   if (digitalRead(encoder0PinA) == HIGH) {
-
     // check channel B to see which way encoder is turning
     if (digitalRead(encoder0PinB) == LOW) {
       encoder0Pos = encoder0Pos + 1;         // CW
@@ -27,7 +32,6 @@ void doEncoderA() {
       encoder0Pos = encoder0Pos - 1;         // CCW
     }
   }
-
   else   // must be a high-to-low edge on channel A
   {
     // check channel B to see which way encoder is turning
@@ -38,7 +42,6 @@ void doEncoderA() {
       encoder0Pos = encoder0Pos - 1;          // CCW
     }
   }
-
   // Reset counter
   if (encoder0Pos > 8399) {
     encoder0Pos = 0;
@@ -46,15 +49,17 @@ void doEncoderA() {
   else if (encoder0Pos < 0) {
     encoder0Pos = 8399;
   }
-  
   //Serial.print("A: ");
   //Serial.println(encoder0Pos);
 }
 
+////////////////////
+// ENCODER B CODE //
+////////////////////
+
 void doEncoderB() {
   // look for a low-to-high on channel B
   if (digitalRead(encoder0PinB) == HIGH) {
-
     // check channel A to see which way encoder is turning
     if (digitalRead(encoder0PinA) == HIGH) {
       encoder0Pos = encoder0Pos + 1;         // CW
@@ -63,9 +68,7 @@ void doEncoderB() {
       encoder0Pos = encoder0Pos - 1;         // CCW
     }
   }
-
   // Look for a high-to-low on channel B
-
   else {
     // check channel B to see which way encoder is turning
     if (digitalRead(encoder0PinA) == LOW) {
@@ -75,7 +78,6 @@ void doEncoderB() {
       encoder0Pos = encoder0Pos - 1;          // CCW
     }
   }
-
   // Reset counter
   if (encoder0Pos > 8399) {
     encoder0Pos = 0;
