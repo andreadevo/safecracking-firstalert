@@ -21,49 +21,62 @@ void rotateDial() {
 
   // takes into account shortest distance before choosing CW or CCW
   else {
-    int destination = dialPos * 84;           // converts user input to be in encoder steps
-    int currentPosition = encoder0Pos / 84;   //  converts encoder into dial number
+    int destination = dialPos * ticks;           // converts user input to be in encoder steps
+    int currentPosition = encoder0Pos / ticks;   //  converts encoder into dial number
 
     //find the largest number
     if (dialPos > currentPosition) {
       if (dialPos - currentPosition >= 50) {  // this would be the longer distance
-        digitalWrite(dirPin, HIGH);     // CW
-        analogWrite(pwmPin, motorSpeed);
-        while (encoder0Pos != destination) {
-//          Serial.println(encoder0Pos);
+        Serial.println("CW 1");
+        setDir(CW);
+        // check for case when user inputs 0
+        if (dialPos = 0) {
+          destination = 30;
         }
+        analogWrite(pwmPin, motorSpeed);
+        while (encoder0Pos != (destination - offset));
         analogWrite(pwmPin, 0);
-      }
-      else {
-        digitalWrite(dirPin, LOW);      // CCW
+      } else {
+        Serial.println("CCW 1");
+        setDir(CCW);
         analogWrite(pwmPin, motorSpeed);
-        while (encoder0Pos != destination) {
-//          Serial.print ("A ");
-//          Serial.println (encoder0Pos, DEC);
-        }
+        while (encoder0Pos != (destination + offset));
         analogWrite(pwmPin, 0);
       }
     }
     else {
       if (currentPosition - dialPos >= 50) {
-        digitalWrite(dirPin, LOW);     // CCW
+        Serial.println("CCW 2");
+        setDir(CCW);
         analogWrite(pwmPin, motorSpeed);
-        while (encoder0Pos != destination) {
-//          Serial.print ("A ");
-//          Serial.println (encoder0Pos, DEC);
-        }
+        while (encoder0Pos != (destination + offset));
         analogWrite(pwmPin, 0);
-      }
-      else {
-        digitalWrite(dirPin, HIGH);      // CW
-        analogWrite(pwmPin, motorSpeed);
-        while (encoder0Pos != destination) {
-//          Serial.print ("A ");
-//          Serial.println (encoder0Pos, DEC);
+      } else {
+        Serial.println("CW 2");
+        setDir(CW);
+        if (dialPos = 0) {
+          destination = totalTicks;
         }
+        analogWrite(pwmPin, motorSpeed);
+        while (encoder0Pos != (destination - offset));
         analogWrite(pwmPin, 0);
       }
     }
+  }
+}
+
+
+///////////////////////////////
+// CHANGE DIRECTION OF MOTOR //
+///////////////////////////////
+void setDir(byte dir) {
+  if (dir == CCW) {
+    digitalWrite(dirPin, LOW);
+    currentDirection = CW;
+  }
+  else if (dir == CW) {
+    digitalWrite(dirPin, HIGH);
+    currentDirection = HIGH;
   }
 }
 
@@ -71,7 +84,7 @@ void rotateDial() {
 // early code that does not take into account shortest distance //
 //////////////////////////////////////////////////////////////////
 //  else {
-//    dialPos = dialPos * 84;           // converts user input to be in encoder steps
+//    dialPos = dialPos * ticks;           // converts user input to be in encoder steps
 //    if (dialPos > encoder0Pos) {      // if moving to a higher number
 //      digitalWrite(dirPin, LOW);      // CCW, increase numbers
 //      analogWrite(pwmPin, motorSpeed);

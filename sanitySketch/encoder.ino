@@ -31,11 +31,11 @@ void doEncoderA() {
   }
 
   // Reset counter
-  if (encoder0Pos > 8399) {
+  if (encoder0Pos > totalTicks) {
     encoder0Pos = 0;
   }
   else if (encoder0Pos < 0) {
-    encoder0Pos = 8399;
+    encoder0Pos = 0;
   }
 }
 
@@ -52,10 +52,10 @@ void doEncoderB() {
     encoder0Pos--;
   }
   // Reset counter
-  if (encoder0Pos > 8399) {
+  if (encoder0Pos > totalTicks) {
     encoder0Pos = 0;
   }
   else if (encoder0Pos < 0) {
-    encoder0Pos = 8399;
+    encoder0Pos = totalTicks;
   }
 }

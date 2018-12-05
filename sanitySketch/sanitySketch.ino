@@ -21,7 +21,9 @@ int cwOffset;                 // clockwise offset from 0
 int ccwOffset;                // counterclockwise offset from 0
 int posZero;                  // zero on dial
 int goToHome;                 // saving home
-int motorSpeed = 150;          // speed from 0-255, written to pwmPin
+int motorSpeed = 50;          // speed from 0-255, written to pwmPin
+int ticks = 84;
+int totalTicks = (ticks * 100)-1;
 
 boolean currentDirection = 0;
 const byte CW = 0;
@@ -58,9 +60,9 @@ void loop() {
   Serial.println(encoder0Pos);
   setDir(CCW);
   
-  analogWrite(pwmPin, motorSpeed);     // turns motor on
-  while (encoder0Pos != 8400 - (2*84));
-  digitalWrite(pwmPin, LOW);      // turns motor off
+  analogWrite(pwmPin, motorSpeed);                   // turns motor on
+  while (encoder0Pos != totalTicks - (ticks * 2));
+  digitalWrite(pwmPin, LOW);                        // turns motor off
   Serial.print("Stop: ");
   Serial.println(encoder0Pos);
   while (1);

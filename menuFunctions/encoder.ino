@@ -24,31 +24,18 @@ void encoderState() {
 void doEncoderA() {
   // look for a low-to-high on channel A
   stateAChange = true;
-  if (digitalRead(encoder0PinA) == HIGH) {
-    // check channel B to see which way encoder is turning
-    if (digitalRead(encoder0PinB) == LOW) {
-      encoder0Pos = encoder0Pos + 1;         // CW
-    }
-    else {
-      encoder0Pos = encoder0Pos - 1;         // CCW
-    }
+  if (currentDirection == CW) {
+    encoder0Pos++;
+  } else {
+    encoder0Pos--;
   }
-  else   // must be a high-to-low edge on channel A
-  {
-    // check channel B to see which way encoder is turning
-    if (digitalRead(encoder0PinB) == HIGH) {
-      encoder0Pos = encoder0Pos + 1;          // CW
-    }
-    else {
-      encoder0Pos = encoder0Pos - 1;          // CCW
-    }
-  }
+
   // Reset counter
-  if (encoder0Pos > 8399) {
+  if (encoder0Pos > totalTicks) {
     encoder0Pos = 0;
   }
   else if (encoder0Pos < 0) {
-    encoder0Pos = 8399;
+    encoder0Pos = totalTicks;
   }
 }
 
@@ -59,30 +46,16 @@ void doEncoderA() {
 void doEncoderB() {
   // look for a low-to-high on channel B
   stateBChange = true;
-  if (digitalRead(encoder0PinB) == HIGH) {
-    // check channel A to see which way encoder is turning
-    if (digitalRead(encoder0PinA) == HIGH) {
-      encoder0Pos = encoder0Pos + 1;         // CW
-    }
-    else {
-      encoder0Pos = encoder0Pos - 1;         // CCW
-    }
-  }
-  // Look for a high-to-low on channel B
-  else {
-    // check channel B to see which way encoder is turning
-    if (digitalRead(encoder0PinA) == LOW) {
-      encoder0Pos = encoder0Pos + 1;          // CW
-    }
-    else {
-      encoder0Pos = encoder0Pos - 1;          // CCW
-    }
+  if (currentDirection == CW) {
+    encoder0Pos++;
+  } else {
+    encoder0Pos--;
   }
   // Reset counter
-  if (encoder0Pos > 8399) {
+  if (encoder0Pos > totalTicks) {
     encoder0Pos = 0;
   }
   else if (encoder0Pos < 0) {
-    encoder0Pos = 8399;
+    encoder0Pos = totalTicks;
   }
 }

@@ -41,8 +41,15 @@ int cwOffset;                 // clockwise offset from 0
 int ccwOffset;                // counterclockwise offset from 0
 int posZero;                  // zero on dial
 int goToHome;                 // saving home
-int motorSpeed = 50;          // speed from 0-255, written to pwmPin
+int motorSpeed = 150;         // speed from 0-255, written to pwmPin
+const int ticks = 81;         // number of ticks per dial position
+int totalTicks = (ticks * 99)-1; //total number of ticks in a rotation
+int offset = 20;
 
+
+boolean currentDirection = 0; // track the direction to encoder
+const byte CW = 0;
+const byte CCW = 1;
 
 
 ///////////
@@ -78,11 +85,11 @@ void loop() {
   int incoming;
   Serial.println("1)Home the Dial");
   Serial.println("2)Enter Dial Position");
-  Serial.println("4)Test Saved Combo");
-  Serial.println("5)Crack the Safe");
-  Serial.println("6)Access EEPROM");
-  Serial.println("7)CCW");
-  Serial.println("8)CW");
+  Serial.println("3)Test Saved Combo");
+  Serial.println("4)Crack the Safe");
+  Serial.println("5)Access EEPROM");
+  Serial.println("6)CCW");
+  Serial.println("7)CW");
 
   while (!Serial.available());            // do nothing, wait for user input
 
@@ -90,28 +97,36 @@ void loop() {
   Serial.print("You pressed: ");
   Serial.println(incoming);
 
-  //menu logic
+  ///////////////
+  // MAIN MENU //
+  ///////////////
+
+  // ---------- HOME THE DIAL ----------
   if (incoming == 1) {
     // user inputs flag position, puts to EEPROM, maps the encoder to the dial
     findHome();
   }
-  
+
+  // ---------- ENTER THE DIAL POSITION ----------
   else if (incoming == 2) {
     // user inputs where to go
     rotateDial();
   }
 
-  else if (incoming == 4) {
+  // ---------- TEST SAVED COMBO ----------
+  else if (incoming == 3) {
     // uses code to open safe with a saved combo
     openSafe();
   }
 
-    else if (incoming == 5) {
+  // ---------- CRACK THE SAFE ----------
+  else if (incoming == 4) {
     // calls function to guess every combination until it finds the correct one
-//    crackTheSafe();
+    //    crackTheSafe();
   }
 
-  else if (incoming == 6) {
+  // ---------- ACCESS EEPROM ----------
+  else if (incoming == 5) {
     // change EEPROM values
     int subIncoming;
     Serial.println("1)Change speed");
@@ -132,33 +147,33 @@ void loop() {
       Serial.println("Not a valid menu option. Please try again.");
     }
   }
-  
-  else if (incoming == 7) {
-    digitalWrite(dirPin, LOW);      // CCW
-    analogWrite(pwmPin, motorSpeed);
 
+  // ---------- CCW ----------
+  else if (incoming == 6) {
+    setDir(CCW);
+    analogWrite(pwmPin, motorSpeed);
     photoState = digitalRead(photoGatePin);
     analogWrite(pwmPin, motorSpeed);     // turns motor on
     while (photoState == HIGH) {
       photoState = digitalRead(photoGatePin);
     }
-    digitalWrite(pwmPin, LOW);      // turns motor off
+    digitalWrite(pwmPin, LOW);          // turns motor off
   }
-  
-  else if (incoming == 8) {
-    digitalWrite(dirPin, HIGH);     // CW
+
+  // ---------- CW ----------
+  else if (incoming == 7) {
+    setDir(CW);
     photoState = digitalRead(photoGatePin);
-    analogWrite(pwmPin, motorSpeed);     // turns motor on
+    analogWrite(pwmPin, motorSpeed);    // turns motor on
     while (photoState == HIGH) {
       Serial.println (encoder0Pos, DEC);
       photoState = digitalRead(photoGatePin);
     }
-    digitalWrite(pwmPin, LOW);      // turns motor off
+    digitalWrite(pwmPin, LOW);          // turns motor off
   }
 
+  // ---------- DEFAULT: TRY AGAIN ----------
   else {
     Serial.println("Not a valid menu option. Please try again.");
   }
-
-  encoderState();     // check if encoder state has changed
 }

@@ -4,27 +4,27 @@
 //
 //void testThirdDisk() {
 //  //turn 4 times CCW set first disk at 96
-//  nextNumber(96, 5, 0);
+//  nextNumber(96, 5, CCW);
 //  //turn 2 times CW set second disk at 33
-//  nextNumber(33, 3, 1);
+//  nextNumber(33, 3, CW);
 //  //full rotation CCW ending on 33
-//  nextNumber(33, 1, 0);
+//  nextNumber(33, 1, CCW);
 //  //CCW once to 36, this is where set test will start
-//  nextNumber(36, 1, 0);
+//  nextNumber(36, 1, CCW);
 //  //CW to 36 check if correct
-//  nextNumber(36, 1, 1);
+//  nextNumber(36, 1, CW);
 //  //CCW 39
-//  nextNumber(39, 1, 0);
+//  nextNumber(39, 1, CCW);
 //  //CW to 39 check
-//  nextNumber(39, 1, 1);
+//  nextNumber(39, 1, CW);
 //  //CCW to 42
-//  nextNumber(42, 1, 0);
+//  nextNumber(42, 1, CCW);
 //  //CW to 42 to check
-//  nextNumber(42, 1, 1);
+//  nextNumber(42, 1, CW);
 //  //CCW to 45
-//  nextNumber(45, 1, 0);
+//  nextNumber(45, 1, CCW);
 //  //CW to check, check should trigger win state
-//  nextNumber(45, 1, 1);
+//  nextNumber(45, 1, CW);
 //  bool isOpen = checkIfOpen();
 //  if(isOpen){
 //    winState();
