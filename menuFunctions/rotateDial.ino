@@ -7,14 +7,16 @@ void rotateDial() {
   Serial.print("Enter dial position: ");
   while (!Serial.available());
   int dialPos = Serial.parseInt();    // where we want the dial to go
-
+  int posDiff = 0;
   Serial.print("You told me to go to ");
   Serial.println(dialPos);
 
   Serial.print("Current position: ");
   Serial.println(encoder0Pos);
   Serial.print("Desired position: ");
-  Serial.println(dialPos);            // user input for dial position on safe
+  Serial.println(dialPos);
+
+  // CHECK IF VALID INPUT
   if (dialPos > 99) {
     Serial.println("That number is not in the dial range. Please try again.");
   }
@@ -24,55 +26,25 @@ void rotateDial() {
     int destination = dialPos * ticks;           // converts user input to be in encoder steps
     int currentPosition = encoder0Pos / ticks;   //  converts encoder into dial number
 
-    //find the largest number
+    // find the largest number
     if (dialPos > currentPosition) {
-      if (dialPos - currentPosition >= 50) {
+      posDiff = dialPos - currentPosition;
+      if (posDiff >= 50) {
         Serial.println("CW 1");
-        setDir(CW);
-        // check for case when user inputs 0
-        analogWrite(pwmPin, motorSpeed);
-        while (encoder0Pos != (destination + (ticks*30)));
-        slowDown(2);
-        while (encoder0Pos != (destination + (ticks*10)));
-        slowDown(4);
-        while(encoder0Pos != destination - offset);
-        analogWrite(pwmPin, 0);
+        moveDialCW(destination, posDiff);
       } else {
         Serial.println("CCW 1");
-        setDir(CCW);
-        analogWrite(pwmPin, motorSpeed);
-        while (encoder0Pos != (destination - (ticks*30)));
-        slowDown(2);
-        while (encoder0Pos != (destination - (ticks*10)));
-        slowDown(4);
-        while (encoder0Pos != (destination + offset));
-        analogWrite(pwmPin, 0);
+        moveDialCCW(destination, posDiff);
       }
     }
     else {
-      if (currentPosition - dialPos >= 50) {
+      posDiff = currentPosition - dialPos;
+      if (posDiff >= 50) {
         Serial.println("CCW 2");
-        setDir(CCW);
-        analogWrite(pwmPin, motorSpeed);
-        while (encoder0Pos != (destination - (ticks*30)));
-        slowDown(2);
-        while (encoder0Pos != (destination - (ticks*10)));
-        slowDown(4);
-        while (encoder0Pos != (destination + offset));
-        analogWrite(pwmPin, 0);
+        moveDialCCW(destination, posDiff);
       } else {
         Serial.println("CW 2");
-        setDir(CW);
-        if (dialPos = 0) {
-          destination = totalTicks;
-        }
-        analogWrite(pwmPin, motorSpeed);
-        while (encoder0Pos != (destination + (ticks*30)));
-        slowDown(2);
-        while (encoder0Pos != (destination + (ticks*10)));
-        slowDown(4);
-        while (encoder0Pos != (destination - offset));
-        analogWrite(pwmPin, 0);
+        moveDialCW(destination, posDiff);
       }
     }
   }
@@ -93,30 +65,72 @@ void setDir(byte dir) {
   }
 }
 
+//////////////////////////////
+// SLOW DOWN CALIBRATION CW //
+//////////////////////////////
+
+void moveDialCW(int destination, int posDiff) {
+  setDir(CW);
+  // slowdown function based on dial position
+  if (posDiff <= 20) {
+    slowDown(4);
+    while (encoder0Pos != destination - offset);
+    analogWrite(pwmPin, 0);
+  }
+  else if (posDiff <= 60) {
+    slowDown(2);
+    while (encoder0Pos != (destination + (ticks * 20)));
+    slowDown(4);
+    while (encoder0Pos != destination - offset);
+    analogWrite(pwmPin, 0);
+  }
+  else {
+    analogWrite(pwmPin, motorSpeed);
+    while (encoder0Pos != (destination + (ticks * 40)));
+    slowDown(2);
+    while (encoder0Pos != (destination + (ticks * 20)));
+    slowDown(4);
+    while (encoder0Pos != destination - offset);
+    analogWrite(pwmPin, 0);
+  }
+}
+
+///////////////////////////////
+// SLOW DOWN CALIBRATION CCW //
+///////////////////////////////
+
+void moveDialCCW(int destination, int posDiff) {
+  setDir(CCW);
+  // slowdown function based on dial position
+  if (posDiff <= 20) {
+    slowDown(4);
+    while (encoder0Pos != (destination + offset));
+    analogWrite(pwmPin, 0);
+  }
+  else if (posDiff <= 60) {
+    slowDown(2);
+    while (encoder0Pos != (destination - (ticks * 20)));
+    slowDown(4);
+    while (encoder0Pos != (destination + offset));
+    analogWrite(pwmPin, 0);
+  }
+  else {
+    analogWrite(pwmPin, motorSpeed);
+    while (encoder0Pos != (destination - (ticks * 40)));
+    slowDown(2);
+    while (encoder0Pos != (destination - (ticks * 20)));
+    slowDown(4);
+    while (encoder0Pos != (destination + offset));
+    analogWrite(pwmPin, 0);
+  }
+}
+
 ///////////////
 // SLOW DOWN //
 ///////////////
 
 void slowDown(int var) {
-  analogWrite(pwmPin, motorSpeed/var);
+  analogWrite(pwmPin, motorSpeed / var);
 }
 
-//////////////////////////////////////////////////////////////////
-// early code that does not take into account shortest distance //
-//////////////////////////////////////////////////////////////////
-//  else {
-//    dialPos = dialPos * ticks;           // converts user input to be in encoder steps
-//    if (dialPos > encoder0Pos) {      // if moving to a higher number
-//      digitalWrite(dirPin, LOW);      // CCW, increase numbers
-//      analogWrite(pwmPin, motorSpeed);
-//      while (encoder0Pos != dialPos);
-//      analogWrite(pwmPin, 0);
-//    }
-//    else {                            // else moving to a lower number
-//      digitalWrite(dirPin, HIGH);     // CW, decrease numbers
-//      analogWrite(pwmPin, motorSpeed);
-//      while (encoder0Pos != dialPos);
-//      analogWrite(pwmPin, 0);
-//    }
-//  }
-//}
+
