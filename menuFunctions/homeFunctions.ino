@@ -46,15 +46,13 @@ void findFlag() {
 void goToZero() {
   int incoming;
   
-  digitalWrite(dirPin, LOW);
+  setDir(CCW);
   analogWrite(pwmPin, motorSpeed);
-  while (encoder0Pos != 20);
+  while (encoder0Pos != (ticks*70));
+  slowDown(2);
+  while (encoder0Pos != (ticks*90));
+  slowDown(4);
+  while (encoder0Pos != 1);
   analogWrite(pwmPin, 0);
-  if (encoder0Pos != 20){
-    digitalWrite(dirPin, HIGH);
-    analogWrite(pwmPin, motorSpeed/4);
-    while (encoder0Pos != 20);
-    analogWrite(pwmPin, 0);
-  }
 }
 

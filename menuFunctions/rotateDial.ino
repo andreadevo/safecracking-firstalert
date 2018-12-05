@@ -26,20 +26,25 @@ void rotateDial() {
 
     //find the largest number
     if (dialPos > currentPosition) {
-      if (dialPos - currentPosition >= 50) {  // this would be the longer distance
+      if (dialPos - currentPosition >= 50) {
         Serial.println("CW 1");
         setDir(CW);
         // check for case when user inputs 0
-        if (dialPos = 0) {
-          destination = 30;
-        }
         analogWrite(pwmPin, motorSpeed);
-        while (encoder0Pos != (destination - offset));
+        while (encoder0Pos != (destination + (ticks*30)));
+        slowDown(2);
+        while (encoder0Pos != (destination + (ticks*10)));
+        slowDown(4);
+        while(encoder0Pos != destination - offset);
         analogWrite(pwmPin, 0);
       } else {
         Serial.println("CCW 1");
         setDir(CCW);
         analogWrite(pwmPin, motorSpeed);
+        while (encoder0Pos != (destination - (ticks*30)));
+        slowDown(2);
+        while (encoder0Pos != (destination - (ticks*10)));
+        slowDown(4);
         while (encoder0Pos != (destination + offset));
         analogWrite(pwmPin, 0);
       }
@@ -49,6 +54,10 @@ void rotateDial() {
         Serial.println("CCW 2");
         setDir(CCW);
         analogWrite(pwmPin, motorSpeed);
+        while (encoder0Pos != (destination - (ticks*30)));
+        slowDown(2);
+        while (encoder0Pos != (destination - (ticks*10)));
+        slowDown(4);
         while (encoder0Pos != (destination + offset));
         analogWrite(pwmPin, 0);
       } else {
@@ -58,6 +67,10 @@ void rotateDial() {
           destination = totalTicks;
         }
         analogWrite(pwmPin, motorSpeed);
+        while (encoder0Pos != (destination + (ticks*30)));
+        slowDown(2);
+        while (encoder0Pos != (destination + (ticks*10)));
+        slowDown(4);
         while (encoder0Pos != (destination - offset));
         analogWrite(pwmPin, 0);
       }
@@ -78,6 +91,14 @@ void setDir(byte dir) {
     digitalWrite(dirPin, HIGH);
     currentDirection = HIGH;
   }
+}
+
+///////////////
+// SLOW DOWN //
+///////////////
+
+void slowDown(int var) {
+  analogWrite(pwmPin, motorSpeed/var);
 }
 
 //////////////////////////////////////////////////////////////////

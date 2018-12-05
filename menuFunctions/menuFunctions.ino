@@ -41,10 +41,10 @@ int cwOffset;                 // clockwise offset from 0
 int ccwOffset;                // counterclockwise offset from 0
 int posZero;                  // zero on dial
 int goToHome;                 // saving home
-int motorSpeed = 150;         // speed from 0-255, written to pwmPin
-const int ticks = 81;         // number of ticks per dial position
-int totalTicks = (ticks * 99)-1; //total number of ticks in a rotation
-int offset = 20;
+int motorSpeed = 200;         // speed from 0-255, written to pwmPin
+const int ticks = 83;         // number of ticks per dial position
+int totalTicks = (ticks * 99) - 1; //total number of ticks in a rotation
+int offset = 21;
 
 
 boolean currentDirection = 0; // track the direction to encoder
