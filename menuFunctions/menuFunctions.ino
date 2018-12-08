@@ -42,9 +42,10 @@ int ccwOffset;                // counterclockwise offset from 0
 int posZero;                  // zero on dial
 int goToHome;                 // saving home
 int motorSpeed = 200;         // speed from 0-255, written to pwmPin
-const int ticks = 83;         // number of ticks per dial position
+const int ticks = 85;         // number of ticks per dial position
 int totalTicks = (ticks * 99) - 1; //total number of ticks in a rotation
-int offset = 21;
+int offset = 20;
+bool win = false;
 
 
 boolean currentDirection = 0; // track the direction to encoder
@@ -122,7 +123,8 @@ void loop() {
   // ---------- CRACK THE SAFE ----------
   else if (incoming == 4) {
     // calls function to guess every combination until it finds the correct one
-    //    crackTheSafe();
+    while (win == false)
+      crackTheSafe();
   }
 
   // ---------- ACCESS EEPROM ----------

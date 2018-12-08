@@ -57,17 +57,24 @@ void rotateDial() {
 void setDir(byte dir) {
   if (dir == CCW) {
     digitalWrite(dirPin, LOW);
-    currentDirection = CW;
+    currentDirection = CCW;
   }
   else if (dir == CW) {
     digitalWrite(dirPin, HIGH);
-    currentDirection = HIGH;
+    currentDirection = CW;
   }
 }
 
 //////////////////////////////
 // SLOW DOWN CALIBRATION CW //
 //////////////////////////////
+
+//if we are going CW then the numbers are decreasing
+//this means we need to slow down at numbers higher than our desired dial position
+//we must make an initial check for the points at which we slow down
+//then we can call our slowdown function at those points
+//we do not really need to have cases if we are always doing at least one full rotation before each dial position
+//we will always have 30 dial positions before the number we're trying to reach
 
 void moveDialCW(int destination, int posDiff) {
   setDir(CW);
@@ -98,6 +105,9 @@ void moveDialCW(int destination, int posDiff) {
 ///////////////////////////////
 // SLOW DOWN CALIBRATION CCW //
 ///////////////////////////////
+
+//if we are going CCW then the numbers are increasing
+//this means we need to slow down at numbers lower than our desired dial position
 
 void moveDialCCW(int destination, int posDiff) {
   setDir(CCW);

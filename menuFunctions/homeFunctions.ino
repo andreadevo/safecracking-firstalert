@@ -50,9 +50,9 @@ void goToZero() {
   analogWrite(pwmPin, motorSpeed);
   while (encoder0Pos != (ticks*70));
   slowDown(2);
-  while (encoder0Pos != (ticks*90));
+  while (encoder0Pos != (ticks*80));
   slowDown(4);
-  while (encoder0Pos != 1);
+  while (encoder0Pos != offset);
   analogWrite(pwmPin, 0);
 }
 

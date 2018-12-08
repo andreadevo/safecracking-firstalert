@@ -8,17 +8,17 @@ void openSafe() {
   int turnDir;            // direction turning
 
   // call function to rotate and stop on each number
-  nextNumber(88, 5, CCW); //95
+  nextNumber(97, 5, CCW);
   delay(5000);
-  nextNumber(27, 3, CW); //20
+  nextNumber(7, 3, CW);
   delay(5000);
-  nextNumber(37, 2, CCW); //41
+  nextNumber(67, 2, CCW);
   delay(5000);
 
   // moves to fourth combination number
   setDir(CW);
-  analogWrite(pwmPin, motorSpeed); // motor on
-  while(encoder0Pos != 10);
+  analogWrite(pwmPin, (motorSpeed/4)); // motor on
+  while (encoder0Pos != 10);
   analogWrite(pwmPin, 0);
 }
 
@@ -34,14 +34,23 @@ void nextNumber(int nextNum, int numRot, byte turnDir) {
   analogWrite(pwmPin, motorSpeed);     // turn motor on
   for (int i = 0; i < numRot; i++) {   // tracking the amount of rotations
     //call slowdown ticks
-    while (encoder0Pos != nextNum * ticks);    // rotating until we find nextNum
-    
+    if (i == (numRot - 1)) {
+      slowDown(4);
+      while (encoder0Pos != (nextNum * ticks));
+    }
+    else if (i == (numRot - 2)) {
+      slowDown(2);
+      while (encoder0Pos != (nextNum * ticks));
+    }
+    else {
+      while (encoder0Pos != (nextNum * ticks));    // rotating until we find nextNum
+    }
     // change incrementing/decrementing ticks based on direction
-    if (turnDir == 1){
-      nextNum++;
+    if (turnDir == CW) {
+      nextNum += 1;
     } else {
-      nextNum--;
-    }                  
+      nextNum -= 1;
+    }
   }
   analogWrite(pwmPin, 0);             // turn motor off
 }

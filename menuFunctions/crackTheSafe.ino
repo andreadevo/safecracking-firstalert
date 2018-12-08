@@ -2,15 +2,21 @@
 // ALGORITHM TO TEST EVERY POSSIBLE COMBINATION //
 //////////////////////////////////////////////////
 
-void crackTheSafe(){
-}
-
-
-////////////////////////////////////////////////////////
-// CHECKS ALL COMBINATIONS WITH THE SAME FIRST NUMBER //
-////////////////////////////////////////////////////////
-
-void checkCombinations(int firstCombo){
+void crackTheSafe() {
+  //repeatedly calls function to put in 3 digit combo for every solution
+  for (int i = 3; i < 8; i++) {
+    for (int j = 63; j < 68; j++) {
+      nextNumber(98, 5, CCW);
+      delay(500);
+      nextNumber(i, 3, CW);
+      delay(500);
+      nextNumber(j, 2, CCW);
+      delay(500);
+      if (checkIfOpen()) {
+        return;
+      }
+    }
+  }
 }
 
 
@@ -19,6 +25,22 @@ void checkCombinations(int firstCombo){
 ////////////////////////////////
 
 bool checkIfOpen() {
+  //function turns dial CW to zero and then some
+  //checks if safe is open
+  setDir(CW);
+  analogWrite(pwmPin, motorSpeed / 4);
+  while (encoder0Pos != 20);
+  analogWrite(pwmPin, motorSpeed / 8);
+  delay(750);
+  analogWrite(pwmPin, 0);
+  if (encoder0Pos > 7790) {
+    winState();
+    win = true;
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 
@@ -27,10 +49,21 @@ bool checkIfOpen() {
 //////////////////////////////
 
 void winState() {
-  // Serial.print the combination
-  tone(buzzerPin, 1000);
-  delay(10000);
-  noTone(buzzerPin);
-  // should break out of everything
+    tone(buzzerPin, 1000);
+    delay(300);
+    noTone(buzzerPin);
+    tone(buzzerPin, 1000);
+    delay(300);
+    noTone(buzzerPin);
+    tone(buzzerPin, 1000);
+    delay(250);
+    noTone(buzzerPin);
+    tone(buzzerPin, 1600);
+    delay(500);
+    tone(buzzerPin, 1500);
+    delay(250);
+    tone(buzzerPin, 1600);
+    delay(500);
+    noTone(buzzerPin);
 }
 

@@ -24,7 +24,7 @@ void encoderState() {
 void doEncoderA() {
   // look for a low-to-high on channel A
   stateAChange = true;
-  if (currentDirection == CW) {
+  if (currentDirection == CCW) {
     encoder0Pos++;
   } else {
     encoder0Pos--;
@@ -46,7 +46,7 @@ void doEncoderA() {
 void doEncoderB() {
   // look for a low-to-high on channel B
   stateBChange = true;
-  if (currentDirection == CW) {
+  if (currentDirection == CCW) {
     encoder0Pos++;
   } else {
     encoder0Pos--;
