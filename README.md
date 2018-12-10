@@ -41,6 +41,5 @@ Even if we settled for finding a range of 48 values (figuring out right/left num
 1x16x16 = 55 minutes
 
 Even though we ended up testing only 4 possible combinations, the blunt force test time for the right one (97, 7, 67) would be
-1x2x50 = 25 minutes (testing up until getting the correct second number)
-+ 1x1x34 = 8.5 minutes (last test with correct second number until reaching the correct 3rd number).
+1x2x50 = 25 minutes (testing up until getting the correct second number) + 1x1x34 = 8.5 minutes (last test with correct second number until reaching the correct 3rd number).
 Being a total of 33.5 minutes to find this particular combination with our tests checking every other number to make up for any slop in the system.
