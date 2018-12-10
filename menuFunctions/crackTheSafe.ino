@@ -4,8 +4,8 @@
 
 void crackTheSafe() {
   //repeatedly calls function to put in 3 digit combo for every solution
-  for (int i = 3; i < 8; i++) {
-    for (int j = 63; j < 68; j++) {
+  for (int i = 3; i < 97; i++) {
+    for (int j = 63; j < 97; j++) {
       nextNumber(98, 5, CCW);
       delay(500);
       nextNumber(i, 3, CW);
@@ -33,12 +33,14 @@ bool checkIfOpen() {
   analogWrite(pwmPin, motorSpeed / 8);
   delay(750);
   analogWrite(pwmPin, 0);
-  if (encoder0Pos > 7790) {
+  if (encoder0Pos > 7800) {
+    Serial.println(encoder0Pos);
     winState();
     win = true;
     return true;
   }
   else {
+    Serial.println(encoder0Pos);
     return false;
   }
 }
