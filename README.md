@@ -21,16 +21,16 @@ Then the disk farthest from the door had an interference point at 10 facing outw
 We know that the two middle disks are identical and only have two orientations.
 We also know that the first and last disks cannot move or be changed.
 So we have four possible orientations of the disks and their interference points.
-(9)(7/3)(7/3)(10)
-(9)(7/3)(3/7)(10)
-(9)(3/7)(7/3)(10)
-(9)(3/7)(3/7)(10)
+(9)(7/3)(7/3)(10),
+(9)(7/3)(3/7)(10),
+(9)(3/7)(7/3)(10),
+(9)(3/7)(3/7)(10).
 
 This means there are only four possible combinations, one of which is the old one, so in reality, three possible combinations.
-(97,32,44,0)
-(97,32,??,0)
-(97,??,44,0)
-(97,??,??,0)
+(97,32,44,0),
+(97,32,??,0),
+(97,??,44,0),
+(97,??,??,0).
 
 We can guess that most likely both middle disks were flipped to create more mystery
 If we find which orientation the old disks were we can model the new orientation and find a range where the missing numbers could be so that we can make our blunt force test WAY faster than 4 hours. Ideally we should find a range of 10 or 15 which would be 3 to 5 set tests.
