@@ -5,8 +5,8 @@
 void crackTheSafe() {
   //repeatedly calls function to put in 3 digit combo for every solution
   for (int i = 3; i < 97; i++) {
-    for (int j = 63; j < 97; j++) {
-      nextNumber(98, 5, CCW);
+    for (int j = 3; j < 97; j++) {
+      nextNumber(97, 5, CCW);
       delay(500);
       nextNumber(i, 3, CW);
       delay(500);
