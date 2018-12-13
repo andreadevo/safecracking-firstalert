@@ -1,6 +1,8 @@
 # safecracking-firstalert
 Building and designing a robot to open a safe with an unknown combination.
 
+Link to documenation: http://bit.ly/first-alert-documentation
+
 Try times:
 100 possible numbers for 3 disks:
 100x100x100 = 1,000,000 combinations
